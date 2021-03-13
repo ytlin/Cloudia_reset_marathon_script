@@ -3,33 +3,43 @@ import subprocess
 from cv2 import cv2
 import glob
 import numpy as np
+from ppadb.client import Client as AdbClient
 
 class adb():
     def __init__(self, path):
-        #[TO_CHECK] first time adb need to do: adb connect localhost:5555 ?
         self.path = path ##
         self.adb_exe = '{}\\platform-tools\\adb.exe'.format(self.path)
+    
+    def connect_to_server(self, ip, port):
+        self.client = AdbClient(host=ip, port=port)
+        try:
+            v = self.client.version()
+        except:
+            subprocess.Popen('{} start-server'.format(self.adb_exe), stdout=subprocess.PIPE).stdout.read()
+            v = self.client.version()
+        print('Connect success! Version {}'.format(v))
 
-    def connect_to_BS(self):
-        out = subprocess.Popen('{} connect localhost:5555'.format(self.adb_exe), stdout=subprocess.PIPE)
-        return out.stdout.read()
+        return 1
 
     def list_devices(self):
-        out = subprocess.Popen('{} devices'.format(self.adb_exe), stdout=subprocess.PIPE)
-        return out.stdout.read()
+        devices = self.client.devices()
+        print('List of devices attached:')
+        for device in devices:
+            print(device.serial)
+
+        return 1
 
     def screencap(self):
-        out = subprocess.Popen('{} shell screencap -p'.format(self.adb_exe), stdout=subprocess.PIPE)
-        bytes_arr = np.frombuffer(out.stdout.read().replace(b'\r\n', b'\n'), dtype='uint8')
-        img = cv2.imdecode(bytes_arr, cv2.IMREAD_COLOR)
-       
-        return img
+        pass
+      
 
     def tap(self, x, y):
-        out = subprocess.Popen('{} shell input tap {} {}'.format(self.adb_exe, x, y), stdout=subprocess.PIPE)
-        print('===tap: ({}, {})'.format(x, y))
-        return out.stdout.read()
+        pass
 
+project_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+a = adb(project_path)
+a.connect_to_server('127.0.0.1', 5037)
+a.list_devices()
 
 def cv_imread(path):
     img = cv2.imdecode(np.fromfile(path, dtype=np.uint8), cv2.IMREAD_COLOR)
