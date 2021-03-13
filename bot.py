@@ -46,20 +46,18 @@ while True:
             h.tap_screen(skip_loc[0], skip_loc[1])
 
     # 開始檢查是否成功
-    #if check_req(h, temps['required']) and check_opt(h, temps['optional'], OPT_MIN):
-    #    break
-    print('=====  {} ========='.format(times))
     req_accs = check_req(h, temps['required'])
     opt_accs, cnt = check_opt(h, temps['optional'], OPT_MIN)
+    '''[DEBUG]
     print('必要:')
     for i in range(len(reqs)):
         print('{}: {}'.format(reqs[i], req_accs[i]))
     print('選中:')
     for i in range(len(opts)):
         print('{}: {}'.format(opts[i], opt_accs[i]))
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-    print()
-    if all(acc > 0.7 for acc in req_accs) and cnt >= OPT_MIN:
+    '''
+    print('=====  {} ========= : {}, {}'.format(times, sum(acc > 0.65 for acc in req_accs), cnt))
+    if all(acc > 0.65 for acc in req_accs) and cnt >= OPT_MIN:
         break
     # 再來一次
     h.tap_screen(re_loc[0], re_loc[1])

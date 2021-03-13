@@ -6,13 +6,12 @@ import numpy as np
 
 class adb():
     def __init__(self, path):
-        #[TO_CHECK] first time adb need to do: adb connect localhost:5555 ?
         self.path = path ##
         self.adb_exe = '{}\\platform-tools\\adb.exe'.format(self.path)
 
-    def connect_to_BS(self):
-        out = subprocess.Popen('{} connect localhost:5555'.format(self.adb_exe), stdout=subprocess.PIPE)
-        return out.stdout.read()
+    def start_ADB_server(self):
+        subprocess.Popen('{} start-server'.format(self.adb_exe), stdout=subprocess.PIPE).stdout.read()
+        return self
 
     def list_devices(self):
         out = subprocess.Popen('{} devices'.format(self.adb_exe), stdout=subprocess.PIPE)
@@ -27,7 +26,6 @@ class adb():
 
     def tap(self, x, y):
         out = subprocess.Popen('{} shell input tap {} {}'.format(self.adb_exe, x, y), stdout=subprocess.PIPE)
-        print('===tap: ({}, {})'.format(x, y))
         return out.stdout.read()
 
 
@@ -39,7 +37,7 @@ class helper():
 
     def __init__(self, path):
         self.path = path
-        self.adb = adb(self.path)
+        self.adb = adb(self.path).start_ADB_server()
         self.templates = {}
         self.required_list = glob.glob('{}\\images\\required\\*.png'.format(self.path))
         self.optional_list = glob.glob('{}\\images\\optional\\*.png'.format(self.path))
