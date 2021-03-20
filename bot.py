@@ -39,13 +39,22 @@ if __name__ == '__main__':
     temps = h.load_templates()
     reqs = [ntpath.basename(path) for path in h.required_list]
     opts = [ntpath.basename(path) for path in h.optional_list]
-    print('必要:')
-    for i in range(len(reqs)):
-        print('{}'.format(reqs[i]))
-    print('選中:')
-    for i in range(len(opts)):
-        print('{}'.format(opts[i]))
     times = 1
+
+    ready = None
+    while ready != 'Y':
+        print('-----------------------------------------------')
+        print('必要:')
+        for i in range(len(reqs)):
+            print('{}'.format(reqs[i]))
+        print('選中:')
+        for i in range(len(opts)):
+            print('{}'.format(opts[i]))
+        print('-----------------------------------------------')
+        print('檢查以上必要和選中清單是否正確，若要調整請直接去 images/required 和 images/optional 底下新增/刪除照片')
+        print('(角色照片若要新增請注意截圖時畫面解析度是否為1600*900)')
+        ready = input('是否 OK? [Y/N]')
+    
 
     while True:
         # 跳過動畫，盡量減少match
@@ -59,8 +68,6 @@ if __name__ == '__main__':
                 break
 
         # 開始檢查是否成功
-        #if check_req(h, temps['required']) and check_opt(h, temps['optional'], OPT_MIN):
-        #    break
         print('=====  {} ========='.format(times))
         print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
         print()
